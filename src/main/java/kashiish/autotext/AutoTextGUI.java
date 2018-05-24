@@ -50,10 +50,6 @@ public class AutoTextGUI extends JFrame implements ActionListener {
 	 * update method is not called. 
 	 */
 	private boolean updateFromSelectedValue = false;
-	/* Document Listener for text field */
-	private DocumentListener documentListener;
-	/* List Selection Listener for suggestions list */
-	private ListSelectionListener listListener;
 	
 	public AutoTextGUI() {
 		
@@ -121,7 +117,7 @@ public class AutoTextGUI extends JFrame implements ActionListener {
 	
 	private void initializeAutocompleteSuggestionsList() {
 		
-		listListener = new ListSelectionListener() {
+		ListSelectionListener listListener = new ListSelectionListener() {
 
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
@@ -151,9 +147,7 @@ public class AutoTextGUI extends JFrame implements ActionListener {
 	}
 	
 	private void initializeTextField() {
-		
-		documentListener = new DocumentListener() {
-			private Document doc;
+		DocumentListener documentListener = new DocumentListener() {
 			//document listener should not update when updatedFromSelectedValue is set to true
 			@Override
 			public void insertUpdate(DocumentEvent e) {if(!updateFromSelectedValue) updateAutocomplete(e);}
@@ -165,7 +159,7 @@ public class AutoTextGUI extends JFrame implements ActionListener {
 			public void changedUpdate(DocumentEvent e) {if(!updateFromSelectedValue) updateAutocomplete(e);}
 			
 			private void updateAutocomplete(DocumentEvent e) {
-				doc = (Document) e.getDocument();
+				Document doc = (Document) e.getDocument();
 				try {
 					String text = doc.getText(0, doc.getLength());
 					String[] words = text.split(" ");

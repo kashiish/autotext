@@ -24,7 +24,7 @@ public class BKTree implements Tree {
 	private TreeNode root;
 	/* The number of words in the tree. */
 	private int size = 0;
-	
+
 	
 	/**
 	 * Creates a new BKTree. 
@@ -183,7 +183,7 @@ public class BKTree implements Tree {
 	 * @param wordB		String
 	 * @return double	Edit distance between input strings
 	 */
-	private static int getDistance(String wordA, String wordB) {
+	private int getDistance(String wordA, String wordB) {
 		
 		if(wordA.length() == 0 || wordB.length() == 0) return Math.max(wordA.length(), wordB.length());
 		
@@ -191,7 +191,7 @@ public class BKTree implements Tree {
 		int n = wordB.length();
 		
 		int[][] memo = new int[m + 1][n + 1];
-		
+
 		getDistanceUtil(wordA, wordB, m, n, memo);
 		
 		return memo[m][n];
@@ -206,34 +206,32 @@ public class BKTree implements Tree {
 	 * @param memo			double[][], used to store previously calculated results
 	 * @return double		edit distance between substrings wordA[i:m] and wordB[j:n]
 	 */
-	private static int getDistanceUtil(String wordA, String wordB, int i, int j, int[][] memo) {
+	private int getDistanceUtil(String wordA, String wordB, int i, int j, int[][] memo) {
 		if(i == 0 && j == 0) return 0;
 		if(i == 0 || j == 0) return Math.max(i, j) + 2;
 		if(memo[i][j] != 0) return memo[i][j];
 		
-		if(wordA.charAt(i - 1) == wordB.charAt(j - 1)) {
-			memo[i][j] = getDistanceUtil(wordA, wordB, i - 1, j - 1, memo);
-		} else {
-			boolean keysAreClose = keysAreClose(wordA.charAt(i - 1), wordB.charAt(j - 1));
-			boolean isTransposed = isTransposed(wordA, wordB, i, j);
-			int substitutionWeight = !keysAreClose && isTransposed ? -2 : (keysAreClose ? 0 : 1) + (isTransposed ? 0 : 1);
-			
-			
-			int substitute = getDistanceUtil(wordA, wordB, i - 1, j - 1, memo) + substitutionWeight;
-			/* 
-			 * Adds one to the value if the previous character is not the same as current character and
-			 * subtracts one if it is the same.
-			 * Helps decrease the edit distance if a character is typed consecutively or is missing a repeated letter.
-			 * For example "catle" -> "cattle" or "mapple" -> "maple"
-			 */
-			int insert = getDistanceUtil(wordA, wordB, i, j - 1, memo) + (samePreviousChar(wordB, j) ? -1 : 1);
-			int delete = getDistanceUtil(wordA, wordB, i - 1, j, memo) + (samePreviousChar(wordA, i) ? -1 : 1);
-			memo[i][j] = Math.min(substitute, Math.min(insert, delete)) + 1;
-		}
+		if(wordA.charAt(i - 1) == wordB.charAt(j - 1))
+			return memo[i][j] = getDistanceUtil(wordA, wordB, i - 1, j - 1, memo);
 		
-		return memo[i][j];
+		boolean keysAreClose = keysAreClose(wordA.charAt(i - 1), wordB.charAt(j - 1));
+		boolean isTransposed = isTransposed(wordA, wordB, i, j);
+		int substitutionWeight = !keysAreClose && isTransposed ? -2 : (keysAreClose ? 0 : 1) + (isTransposed ? 0 : 1);
+		
+		
+		int substitute = getDistanceUtil(wordA, wordB, i - 1, j - 1, memo) + substitutionWeight;
+		/* 
+		 * Adds one to the value if the previous character is not the same as current character and
+		 * subtracts one if it is the same.
+		 * Helps decrease the edit distance if a character is typed consecutively or is missing a repeated letter.
+		 * For example "catle" -> "cattle" or "mapple" -> "maple"
+		 */
+		int insert = getDistanceUtil(wordA, wordB, i, j - 1, memo) + (samePreviousChar(wordB, j) ? -1 : 1);
+		int delete = getDistanceUtil(wordA, wordB, i - 1, j, memo) + (samePreviousChar(wordA, i) ? -1 : 1);
+		return memo[i][j] = Math.min(substitute, Math.min(insert, delete)) + 1;
+
 	}
-	
+			
 	/*
 	 * Checks if the previous character before index k in the word is the same as 
 	 * the character at index k. 
@@ -241,7 +239,7 @@ public class BKTree implements Tree {
 	 * @param k			int, index of current character
 	 * @return boolean
 	 */
-	private static boolean samePreviousChar(String word, int k) {
+	private boolean samePreviousChar(String word, int k) {
 		if(word.length() < 3) return false;
 		if(k == word.length()) {
 			return word.charAt(k - 1) == word.charAt(k - 2);
@@ -258,10 +256,8 @@ public class BKTree implements Tree {
 	 * @param j				int, index of wordB character
 	 * @return boolean
 	 */
-	private static boolean isTransposed(String wordA, String wordB, int i, int j) {
-		if(i > 1 && j > 1 && wordA.charAt(i - 2) == wordB.charAt(j - 1) && wordA.charAt(i - 1) == wordB.charAt(j - 2))
-			return true;
-		return false;
+	private boolean isTransposed(String wordA, String wordB, int i, int j) {
+		return i > 1 && j > 1 && wordA.charAt(i - 2) == wordB.charAt(j - 1) && wordA.charAt(i - 1) == wordB.charAt(j - 2);
 	}
 	
 	/*
@@ -272,7 +268,7 @@ public class BKTree implements Tree {
 	 * @param b				char
 	 * @return boolean
 	 */
-	private static boolean keysAreClose(char a, char b) {
+	private boolean keysAreClose(char a, char b) {
 		/* 
 		 * Assign numbers to each character determined by the key position on qwerty keyboard.
 		 * The first row has 10 letters and middle row has 9. 10 - 9 = 1, so the middle row characters have an additional 0.1 added.
