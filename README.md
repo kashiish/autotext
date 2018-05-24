@@ -56,6 +56,9 @@ public static void main(String[] args) {
 
 Please feel free to report or fix any bugs you may find in the program. It's greatly appreciated!
 
+Current issues:
+- the NPath complexity of the [method](https://github.com/kashiish/autotext/blob/ebb01be68831cb8d07e701d51a9843d4e7666ceb/src/main/java/kashiish/autotext/autocorrect/BKTree.java#L209) that calculates the distance between strings is very high. 
+
 ### License
 
 MIT
