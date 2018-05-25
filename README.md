@@ -40,7 +40,7 @@ public static void main(String[] args) {
 	 */
 	ArrayList<String> corrections = autotext.autocorrect("lovly");
 	//set max autocomplete suggestions
-	at.setMaxSuggestions(3);
+	autotext.setMaxSuggestions(3);
 	ArrayList<String> suggestions = autotext.autocomplete("ques")
 	System.out.println(corrections);
 	System.out.println(suggestions);
